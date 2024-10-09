@@ -9,8 +9,9 @@ import re
 from datetime import datetime
 import numpy as np
 # pytesseract.pytesseract.tesseract_cmd = r'D:\Programas\tesseract.exe'
-pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
+#pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
 from .proceso_imagenreverso import *
+from .proceso_imagen_anverso import *
 # Create your views here.
 class OCRView(APIView):
     def get(self, request):
@@ -147,12 +148,13 @@ class OCRView2(APIView):
         # imagen = Image.open('D:/Trabajos/Proyectos/MyDocuments/Backend/MyDocumentsProject/Documentos/20241005_212030.jpg')
         # imagen = Image.open('E:/SGCapiataFuente/Python/MyDocuments/Backends/MyDocuments/Documentos/20241005_212030.jpg')
         # imagen = Image.open('E:/SGCapiataFuente/Python/MyDocuments/Backends/MyDocuments/Documentos/20241005_220402.jpg')
-        repuesta_opcion,texto,textolimpio,numerodocumento,sexo,fecha_vencimiento,estado,nombres,apellidos,fecha_nacimiento,tipo=reverso_opcion_uno('E:/SGCapiataFuente/Python/MyDocuments/Backends/MyDocuments/Documentos/20241005_220402.jpg')
+        img='D:/Trabajos/Proyectos/MyDocuments/Backend/MyDocumentsProject/Documentos/20241005_212030.jpg'
+        repuesta_opcion,texto,textolimpio,numerodocumento,sexo,fecha_vencimiento,estado,nombres,apellidos,fecha_nacimiento,tipo=reverso_opcion_uno(img)
         if repuesta_opcion==False:
-            repuesta_opcion,texto,textolimpio,numerodocumento,sexo,fecha_vencimiento,estado,nombres,apellidos,fecha_nacimiento,tipo=reverso_opcion_dos('E:/SGCapiataFuente/Python/MyDocuments/Backends/MyDocuments/Documentos/20241005_220402.jpg')
+            repuesta_opcion,texto,textolimpio,numerodocumento,sexo,fecha_vencimiento,estado,nombres,apellidos,fecha_nacimiento,tipo=reverso_opcion_dos(img)
         # repuesta_opcion=reverso_opcion_uno('E:/SGCapiataFuente/Python/MyDocuments/Backends/MyDocuments/Documentos/20241005_220402.jpg')
         if repuesta_opcion :
-            respuesta = {
+            respuesta_reverso = {
                 "mensaje": "Datos extraídos exitosamente",
                 "datos": textolimpio,
                 "Texto Original":texto,
@@ -170,16 +172,40 @@ class OCRView2(APIView):
 
                 }
             }
-            return Response(respuesta, status=status.HTTP_200_OK)
+            #return Response(respuesta_reverso, status=status.HTTP_200_OK)
     
         else:
-             respuesta = {
+             respuesta_reverso = {
                 "mensaje": "No se pudo encontrar los datos el texto",
                 "datos": textolimpio,
                 "Texto Original":texto,
                 
             }
-             return Response(respuesta, status=status.HTTP_400_BAD_REQUEST)
+        img_anverso='D:/Trabajos/Proyectos/MyDocuments/Backend/MyDocumentsProject/Documentos/20241005_222825.jpg'
+        texto_anverso,sexo_anv,fecha_vencimiento_anv,nombres_anv,apellidos_anv,fecha_nacimiento_anv=anverso_opcion_uno(img_anverso)
+        respuesta_anverso = {
+            "mensaje": "Datos extraídos exitosamente",
+            
+            "Texto Original":texto_anverso,
+            "valores": {
+                    "Sexo": sexo_anv,
+                    "Fecha Vencimiento":fecha_vencimiento_anv,
+                    "Nombres":nombres_anv,
+                    "Apellidos":apellidos_anv,
+                    "Fecha Nacimiento": fecha_nacimiento_anv
+
+                }
+            
+            
+        }
+
+        respuesta={
+            'reverso':respuesta_reverso,
+            'anverso':respuesta_anverso
+        }
+
+        return Response(respuesta, status=status.HTTP_200_OK)
+            #  return Response(respuesta_reverso, status=status.HTTP_400_BAD_REQUEST)
             
 
 class OCRView3(APIView):
