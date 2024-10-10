@@ -1,3 +1,5 @@
+from django.conf import settings
+import os
 from django.shortcuts import render
 from rest_framework import status
 from rest_framework.response import Response
@@ -365,6 +367,101 @@ class OCRView3(APIView):
                 return Response(respuesta, status=status.HTTP_200_OK)
             else:
                return Response({"mensaje": "No se encontró el texto"}, status=status.HTTP_400_BAD_REQUEST)
+            
+
+
+class ViewLecturaImagen(APIView):
+    def post(self, request):
+        print(request.FILES)
+        # Verificar si los archivos fueron enviados en la solicitud
+        if 'imagen_reverso' not in request.FILES or 'imagen_anverso' not in request.FILES:
+            return Response({"mensaje": "Ambas imágenes son requeridas"}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Crear una carpeta para almacenar las imágenes (si no existe)
+        imagenes_dir = os.path.join(settings.MEDIA_ROOT, 'documentos')
+        os.makedirs(imagenes_dir, exist_ok=True)
+
+        # Obtener las imágenes enviadas
+        imagen_reverso = request.FILES['imagen_reverso']
+        imagen_anverso = request.FILES['imagen_anverso']
+
+        # Guardar las imágenes en el servidor
+        img_reverso_path = os.path.join(imagenes_dir, f'reverso_{datetime.now().strftime("%Y%m%d%H%M%S")}.jpg')
+        img_anverso_path = os.path.join(imagenes_dir, f'anverso_{datetime.now().strftime("%Y%m%d%H%M%S")}.jpg')
+
+        # Guardar las imágenes en el sistema de archivos
+        with open(img_reverso_path, 'wb') as f:
+            for chunk in imagen_reverso.chunks():
+                f.write(chunk)
+
+        with open(img_anverso_path, 'wb') as f:
+            for chunk in imagen_anverso.chunks():
+                f.write(chunk)
+
+        # Procesar las imágenes con tus funciones personalizadas
+        repuesta_opcion = True
+        texto = ''
+        textolimpio = ''
+        numerodocumento = ''
+        sexo = ''
+        fecha_vencimiento = datetime.now()
+        estado = ''
+        nombres = ''
+        apellidos = ''
+        fecha_nacimiento = ''
+        tipo = ''
+        
+        # Llamar a tus funciones con las imágenes guardadas
+        repuesta_opcion, texto, textolimpio, numerodocumento, sexo, fecha_vencimiento, estado, nombres, apellidos, fecha_nacimiento, tipo = reverso_opcion_uno(img_reverso_path)
+
+        if not repuesta_opcion:
+            repuesta_opcion, texto, textolimpio, numerodocumento, sexo, fecha_vencimiento, estado, nombres, apellidos, fecha_nacimiento, tipo = reverso_opcion_dos(img_reverso_path)
+
+        if repuesta_opcion:
+            respuesta_reverso = {
+                "mensaje": "Datos extraídos exitosamente",
+                "datos": textolimpio,
+                "Texto Original": texto,
+                "Respuesta": repuesta_opcion,
+                "Tipo": tipo,
+                "valores": {
+                    "Numero Cedula": numerodocumento,
+                    "Sexo": sexo,
+                    "Fecha Vencimiento": fecha_vencimiento,
+                    "Estado": estado,
+                    "Nombres": nombres,
+                    "Apellidos": apellidos,
+                    "Fecha Nacimiento": fecha_nacimiento
+                }
+            }
+        else:
+            respuesta_reverso = {
+                "mensaje": "No se pudo encontrar los datos en el texto",
+                "datos": textolimpio,
+                "Texto Original": texto,
+            }
+
+        # Procesar la imagen del anverso
+        texto_anverso, sexo_anv, fecha_vencimiento_anv, nombres_anv, apellidos_anv, fecha_nacimiento_anv = anverso_opcion_uno(img_anverso_path)
+        respuesta_anverso = {
+            "mensaje": "Datos extraídos exitosamente",
+            "Texto Original": texto_anverso,
+            "valores": {
+                "Sexo": sexo_anv,
+                "Fecha Vencimiento": fecha_vencimiento_anv,
+                "Nombres": nombres_anv,
+                "Apellidos": apellidos_anv,
+                "Fecha Nacimiento": fecha_nacimiento_anv
+            }
+        }
+
+        # Respuesta final que incluye reverso y anverso
+        respuesta = {
+            'reverso': respuesta_reverso,
+            'anverso': respuesta_anverso
+        }
+
+        return Response(respuesta, status=status.HTTP_200_OK)
 
             
         
