@@ -461,6 +461,12 @@ class ViewLecturaImagen(APIView):
             'anverso': respuesta_anverso
         }
 
+        try:
+            os.remove(img_reverso_path)
+            os.remove(img_anverso_path)
+        except OSError as e:
+            pass
+
         return Response(respuesta, status=status.HTTP_200_OK)
 
             
