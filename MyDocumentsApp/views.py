@@ -38,7 +38,7 @@ class OCRView(APIView):
                 texto_resultado = resultado.group(0)
                 texto_sin_espacios = re.sub(r'[ \t]+', ' ', texto_resultado)
                 texto_sin_espacios = re.sub(r'(?<=\w) +(?=<<)', '', texto_sin_espacios)
-                print('texto_sin_espacios: ',texto_sin_espacios)
+                
                 patron_numero_documento = r"IDPRY(\d+)<<"
                 numero_documento = re.search(patron_numero_documento, texto_sin_espacios)
                 if numero_documento:
@@ -71,8 +71,7 @@ class OCRView(APIView):
                     
                         
 
-                    print("Nueva Sección Completa: ", nueva_seccion)
-                    print("Sexo: ", sexo)
+                    
                     if len(nueva_seccion) > 14:  # Verificamos que haya suficientes caracteres
                         vencimiento = nueva_seccion[8:14]
                         anio = int("20" + vencimiento[:2])  # '33' -> '2033'
@@ -111,8 +110,7 @@ class OCRView(APIView):
                         apellidos = "No se encontraron apellidos"
                         nombres = "No se encontraron nombres"
 
-                    print("Apellidos: ", apellidos)
-                    print("Nombres: ", nombres)
+                    
 
                 respuesta = {
                     "mensaje": "Datos extraídos exitosamente",
@@ -279,7 +277,7 @@ class OCRView3(APIView):
                     seccion_3 = re.sub(r'(?<=\w) +(?=\w)', '', seccion_3)
     
                 else:
-                    print("No se encontraron suficientes secciones.")
+                    pass
                 if seccion_1:
                     numero_documento=seccion_1[5:12]
                     numero_documento_corregida = numero_documento.replace('S', '5').replace('O', '9').replace('T', '7').replace('B', '8')
@@ -324,7 +322,7 @@ class OCRView3(APIView):
                 if seccion_3:
                     patron_nombres_apellidos = r"([A-Z<]+)<<"
                     match = re.search(patron_nombres_apellidos, seccion_3)
-                    print('match nombres: ',match)
+                    
                     if match:
                         nombres_apellidos_seccion = match.group(1)  # IBARRA<MARTINEZ<<BLAS<RAFAEL<<
                         
@@ -372,7 +370,7 @@ class OCRView3(APIView):
 
 class ViewLecturaImagen(APIView):
     def post(self, request):
-        print(request.FILES)
+        
         # Verificar si los archivos fueron enviados en la solicitud
         if 'imagen_reverso' not in request.FILES or 'imagen_anverso' not in request.FILES:
             return Response({"mensaje": "Ambas imágenes son requeridas"}, status=status.HTTP_400_BAD_REQUEST)
@@ -412,62 +410,94 @@ class ViewLecturaImagen(APIView):
         tipo = ''
         
         # Llamar a tus funciones con las imágenes guardadas
-        repuesta_opcion, texto, textolimpio, numerodocumento, sexo, fecha_vencimiento, estado, nombres, apellidos, fecha_nacimiento, tipo = reverso_opcion_uno(img_reverso_path)
+        error_formato_reverso,repuesta_opcion,data_opcion_uno = reverso_opcion_uno(img_reverso_path)
+        if error_formato_reverso == False:
+            
+            if repuesta_opcion==False:
+                error_formato_reverso,repuesta_opcion_dos, data_opcion_dos = reverso_opcion_dos(img_reverso_path)
 
-        if not repuesta_opcion:
-            repuesta_opcion, texto, textolimpio, numerodocumento, sexo, fecha_vencimiento, estado, nombres, apellidos, fecha_nacimiento, tipo = reverso_opcion_dos(img_reverso_path)
+                if repuesta_opcion_dos:
+                    
+                    mensaje= "Datos extraídos exitosamente"
+                    texto=data_opcion_dos['texto_imagen']
+                    textolimpio=data_opcion_dos['texto_sin_espacios'],
+                    numerodocumento=data_opcion_dos['numero_documento_res'] 
+                    sexo=data_opcion_dos['sexo_resp']
+                    fecha_vencimiento=data_opcion_dos['fecha_vencimiento_resp']
+                    estado=data_opcion_dos['estado_resp']
+                    nombres=data_opcion_dos['nombres_resp']
+                    apellidos=data_opcion_dos['apellidos_resp']
+                    fecha_nacimiento=data_opcion_dos['fecha_nacimiento_resp']
+                    tipo=data_opcion_dos['tipo_opcion']
+                else:
+                    mensaje= "No se pudo encontrar los datos en el texto"
+                    
 
-        if repuesta_opcion:
-            respuesta_reverso = {
-                "mensaje": "Datos extraídos exitosamente",
-                "datos": textolimpio,
-                "Texto Original": texto,
-                "Respuesta": repuesta_opcion,
-                "Tipo": tipo,
-                "valores": {
-                    "Numero Cedula": numerodocumento,
-                    "Sexo": sexo,
-                    "Fecha Vencimiento": fecha_vencimiento,
-                    "Estado": estado,
-                    "Nombres": nombres,
-                    "Apellidos": apellidos,
-                    "Fecha Nacimiento": fecha_nacimiento
-                }
-            }
+
+            else:
+                 mensaje= "Datos extraídos exitosamente"
+                 texto=data_opcion_uno['texto_imagen']
+                 textolimpio=data_opcion_uno['texto_sin_espacios'],
+                 numerodocumento=data_opcion_uno['numero_documento_res'] 
+                 sexo=data_opcion_uno['sexo_resp']
+                 fecha_vencimiento=data_opcion_uno['fecha_vencimiento_resp']
+                 estado=data_opcion_uno['estado_resp']
+                 nombres=data_opcion_uno['nombres_resp']
+                 apellidos=data_opcion_uno['apellidos_resp']
+                 fecha_nacimiento=data_opcion_uno['fecha_nacimiento_resp']
+                 tipo=data_opcion_uno['tipo_opcion']
         else:
-            respuesta_reverso = {
-                "mensaje": "No se pudo encontrar los datos en el texto",
-                "datos": textolimpio,
-                "Texto Original": texto,
+            mensaje='Error de Formato'
+
+        respuesta_reverso = {
+            "mensaje": mensaje,
+            "datos": textolimpio,
+            "Texto Original": texto,
+            "tipo":tipo,
+            "valores": {
+                "Numero Cedula": numerodocumento,
+                "Sexo": sexo,
+                "Fecha Vencimiento": fecha_vencimiento,
+                "Estado": estado,
+                "Nombres": nombres,
+                "Apellidos": apellidos,
+                "Fecha Nacimiento": fecha_nacimiento
             }
+        }
+
+
 
         # Procesar la imagen del anverso
-        texto_anverso, sexo_anv, fecha_vencimiento_anv, nombres_anv, apellidos_anv, fecha_nacimiento_anv = anverso_opcion_uno(img_anverso_path)
-        respuesta_anverso = {
-            "mensaje": "Datos extraídos exitosamente",
-            "Texto Original": texto_anverso,
-            "valores": {
-                "Sexo": sexo_anv,
-                "Fecha Vencimiento": fecha_vencimiento_anv,
-                "Nombres": nombres_anv,
-                "Apellidos": apellidos_anv,
-                "Fecha Nacimiento": fecha_nacimiento_anv
+        error_formato_anverso,texto_anverso, sexo_anv, fecha_vencimiento_anv, nombres_anv, apellidos_anv, fecha_nacimiento_anv = anverso_opcion_uno(img_anverso_path)
+        if error_formato_anverso == False:
+            respuesta_anverso = {
+                "mensaje": "Datos extraídos exitosamente",
+                "Texto Original": texto_anverso,
+                "valores": {
+                    "Sexo": sexo_anv,
+                    "Fecha Vencimiento": fecha_vencimiento_anv,
+                    "Nombres": nombres_anv,
+                    "Apellidos": apellidos_anv,
+                    "Fecha Nacimiento": fecha_nacimiento_anv
+                }
             }
-        }
 
-        # Respuesta final que incluye reverso y anverso
-        respuesta = {
-            'reverso': respuesta_reverso,
-            'anverso': respuesta_anverso
-        }
+            # Respuesta final que incluye reverso y anverso
+            respuesta = {
+                'reverso': respuesta_reverso,
+                'anverso': respuesta_anverso
+            }
 
         try:
             os.remove(img_reverso_path)
             os.remove(img_anverso_path)
         except OSError as e:
             pass
+        if error_formato_reverso== False and error_formato_anverso==False:
 
-        return Response(respuesta, status=status.HTTP_200_OK)
+            return Response(respuesta, status=status.HTTP_200_OK)
+        else:
+            return Response({'mensaje':'Error Formato Imagenes'}, status=status.HTTP_400_BAD_REQUEST)
 
             
         

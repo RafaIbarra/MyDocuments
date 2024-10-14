@@ -5,8 +5,9 @@ from datetime import datetime
 import numpy as np
 from PIL import Image, ImageEnhance, ImageFilter
 
-pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
-# pytesseract.pytesseract.tesseract_cmd = r'D:\Programas\tesseract.exe'
+# pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
+pytesseract.pytesseract.tesseract_cmd = r'D:\Programas\tesseract.exe'
+mensaje_deteccion='No detectada correctamente'
 
 def reverso_opcion_uno(direccion_imagen):
         
@@ -22,6 +23,7 @@ def reverso_opcion_uno(direccion_imagen):
         apellidos_resp=''
         fecha_nacimiento_resp=datetime.now()
         numero_documento_res=''
+        texto_sin_espacios=''
         
         respuesta_correcta=True
         imagen = Image.open(direccion_imagen)
@@ -38,11 +40,13 @@ def reverso_opcion_uno(direccion_imagen):
         
         patron = r"IDPRY.*"
         resultado = re.search(patron, texto_imagen, re.DOTALL)
-
+        
 
         # Si encuentra una coincidencia, extrae el texto
         if resultado:
+            error_formato=False
             texto_resultado = resultado.group(0)
+            
             texto_sin_espacios = re.sub(r'[ \t]+', ' ', texto_resultado)
             texto_sin_espacios = re.sub(r'(?<=\w) +(?=<<)', '', texto_sin_espacios)
             secciones = texto_sin_espacios.strip().split('\n')
@@ -78,7 +82,7 @@ def reverso_opcion_uno(direccion_imagen):
                 if sexo_resp in ['M', 'F']:
                     sexo_resp=sexo_resp
                 else:
-                    sexo_resp = "No válido"
+                    sexo_resp = mensaje_deteccion
                     respuesta_correcta=False
                 datovencimiento = seccion_2[8:14]
                 try:
@@ -100,12 +104,12 @@ def reverso_opcion_uno(direccion_imagen):
                         
 
                     else:
-                        fecha_vencimiento_resp = "No válido"
+                        fecha_vencimiento_resp = mensaje_deteccion
                         respuesta_correcta=False
                     
                 except ValueError:
                     # Si falla la conversión a entero, asignar 'No válido'
-                    fecha_vencimiento_resp = "No válido"
+                    fecha_vencimiento_resp = mensaje_deteccion
                     respuesta_correcta=False
 
 
@@ -122,18 +126,18 @@ def reverso_opcion_uno(direccion_imagen):
                         fecha_nacimiento_resp=fecha_nacimiento_resp.strftime('%Y-%m-%d')
 
                     else:
-                        fecha_nacimiento_resp = "No válido"
+                        fecha_nacimiento_resp = mensaje_deteccion
                         respuesta_correcta=False
                     
                 except ValueError:
                     # Si falla la conversión a entero, asignar 'No válido'
-                    fecha_nacimiento_resp = "No válido"
+                    fecha_nacimiento_resp = mensaje_deteccion
                     respuesta_correcta=False
             
             if seccion_3:
                 patron_nombres_apellidos = r"([A-Z<]+)<<"
                 match = re.search(patron_nombres_apellidos, seccion_3)
-                print('match nombres: ',match)
+                
                 if match:
                     nombres_apellidos_seccion = match.group(1)  # IBARRA<MARTINEZ<<BLAS<RAFAEL<<
                     
@@ -153,29 +157,24 @@ def reverso_opcion_uno(direccion_imagen):
                     apellidos_resp = "No se encontraron apellidos"
                     nombres_resp = "No se encontraron nombres"
                     respuesta_correcta=False
-                
 
-                
+        else:
+            error_formato=True
 
-            # respuesta = {
-            #     "mensaje": "Datos extraídos exitosamente",
-            #     "datos": texto_sin_espacios,
-            #     "Texto Original":texto_imagen,
-            #     "valores": {
-            #         "seccion_1": seccion_1,
-            #         "seccion_2": seccion_2,
-            #         "seccion_3": seccion_3,
-            #         "Numero Cedula": numero_documento,
-            #         "Sexo": sexo,
-            #         "Fecha Vencimiento":fecha_vencimiento,
-            #         "Estado": estado,
-            #         "Nombres":nombres,
-            #         "Apellidos":apellidos,
-            #         "Fecha Nacimiento": fecha_nacimiento
-
-            #     }
-            # }
-        return respuesta_correcta,texto_imagen,texto_sin_espacios,numero_documento_res,sexo_resp,fecha_vencimiento_resp,estado_resp,nombres_resp,apellidos_resp,fecha_nacimiento_resp,tipo_opcion
+        data_respuesta={
+            'texto_imagen':texto_imagen,
+            'texto_sin_espacios':texto_sin_espacios,
+            'numero_documento_res':numero_documento_res,
+            'sexo_resp':sexo_resp,
+            'fecha_vencimiento_resp':fecha_vencimiento_resp,
+            'estado_resp':estado_resp,
+            'nombres_resp':nombres_resp,
+            'apellidos_resp':apellidos_resp,
+            'fecha_nacimiento_resp':fecha_nacimiento_resp,
+            'tipo_opcion':tipo_opcion
+        }
+        
+        return error_formato,respuesta_correcta,data_respuesta
 
 
 def reverso_opcion_dos(direccion_imagen):
@@ -192,6 +191,8 @@ def reverso_opcion_dos(direccion_imagen):
     numero_documento_res=''
     tipo_opcion='OPCION DOS'
     respuesta_correcta=True
+    texto_sin_espacios=''
+
     imagen = cv2.imread(direccion_imagen)
 
     gris = cv2.cvtColor(imagen, cv2.COLOR_BGR2GRAY)
@@ -213,6 +214,7 @@ def reverso_opcion_dos(direccion_imagen):
 
     # Si encuentra una coincidencia, extrae el texto
     if resultado:
+        error_formato=False
         texto_resultado = resultado.group(0)
         texto_sin_espacios = re.sub(r'[ \t]+', ' ', texto_resultado)
         texto_sin_espacios = re.sub(r'(?<=\w) +(?=<<)', '', texto_sin_espacios)
@@ -250,7 +252,7 @@ def reverso_opcion_dos(direccion_imagen):
             if sexo_resp in ['M', 'F']:
                 sexo_resp=sexo_resp
             else:
-                sexo_resp = "No válido"
+                sexo_resp = mensaje_deteccion
                 respuesta_correcta=False
             datovencimiento = seccion_2[8:14]
             try:
@@ -271,12 +273,12 @@ def reverso_opcion_dos(direccion_imagen):
                     fecha_vencimiento_resp=fecha_vencimiento_resp.strftime('%Y-%m-%d')
 
                 else:
-                    fecha_vencimiento_resp = "No válido"
+                    fecha_vencimiento_resp = mensaje_deteccion
                     respuesta_correcta=False
                 
             except ValueError:
                 # Si falla la conversión a entero, asignar 'No válido'
-                fecha_vencimiento_resp = "No válido"
+                fecha_vencimiento_resp = mensaje_deteccion
                 respuesta_correcta=False
 
 
@@ -293,18 +295,18 @@ def reverso_opcion_dos(direccion_imagen):
                     fecha_nacimiento_resp=fecha_nacimiento_resp.strftime('%Y-%m-%d')
 
                 else:
-                    fecha_nacimiento_resp = "No válido"
+                    fecha_nacimiento_resp = mensaje_deteccion
                     respuesta_correcta=False
                 
             except ValueError:
                 # Si falla la conversión a entero, asignar 'No válido'
-                fecha_nacimiento_resp = "No válido"
+                fecha_nacimiento_resp = mensaje_deteccion
                 respuesta_correcta=False
         
         if seccion_3:
             patron_nombres_apellidos = r"([A-Z<]+)<<"
             match = re.search(patron_nombres_apellidos, seccion_3)
-            print('match nombres: ',match)
+            
             if match:
                 nombres_apellidos_seccion = match.group(1)  # IBARRA<MARTINEZ<<BLAS<RAFAEL<<
                 
@@ -324,27 +326,21 @@ def reverso_opcion_dos(direccion_imagen):
                 apellidos_resp = "No se encontraron apellidos"
                 nombres_resp = "No se encontraron nombres"
                 respuesta_correcta=False
+
+    else:
+        error_formato=True
             
-
-            
-
-        # respuesta = {
-        #     "mensaje": "Datos extraídos exitosamente",
-        #     "datos": texto_sin_espacios,
-        #     "Texto Original":texto_imagen,
-        #     "valores": {
-        #         "seccion_1": seccion_1,
-        #         "seccion_2": seccion_2,
-        #         "seccion_3": seccion_3,
-        #         "Numero Cedula": numero_documento,
-        #         "Sexo": sexo,
-        #         "Fecha Vencimiento":fecha_vencimiento,
-        #         "Estado": estado,
-        #         "Nombres":nombres,
-        #         "Apellidos":apellidos,
-        #         "Fecha Nacimiento": fecha_nacimiento
-
-        #     }
-        # }
-    return respuesta_correcta,texto_imagen,texto_sin_espacios,numero_documento_res,sexo_resp,fecha_vencimiento_resp,estado_resp,nombres_resp,apellidos_resp,fecha_nacimiento_resp,tipo_opcion
+    data_respuesta={
+            'texto_imagen':texto_imagen,
+            'texto_sin_espacios':texto_sin_espacios,
+            'numero_documento_res':numero_documento_res,
+            'sexo_resp':sexo_resp,
+            'fecha_vencimiento_resp':fecha_vencimiento_resp,
+            'estado_resp':estado_resp,
+            'nombres_resp':nombres_resp,
+            'apellidos_resp':apellidos_resp,
+            'fecha_nacimiento_resp':fecha_nacimiento_resp,
+            'tipo_opcion':tipo_opcion
+        }
+    return error_formato,respuesta_correcta,data_respuesta
 
