@@ -25,10 +25,10 @@ SECRET_KEY = 'django-insecure-5ri)fui09e$ve7n7)g4-$pio%-n^yl#ymw2j7q9ygmui@_2)k$
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1']
-CORS_ALLOWED_ORIGINS=[
-    'http://localhost:3000','http://localhost:5173',
-]
+ALLOWED_HOSTS = ['127.0.0.1','docs.rafaelibarra.xyz','http://localhost:5173','https://image-reading.vercel.app']
+CORS_ALLOWED_ORIGINS=['http://localhost:3000','http://localhost:5173','https://image-reading.vercel.app']
+CORS_ORIGIN_WHITELIST=['http://localhost:5173','https://image-reading.vercel.app']
+
 
 
 # Application definition
@@ -116,7 +116,8 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles') 
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

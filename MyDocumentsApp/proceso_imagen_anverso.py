@@ -5,7 +5,7 @@ from datetime import datetime
 import numpy as np
 from PIL import Image, ImageEnhance, ImageFilter
 # pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
-pytesseract.pytesseract.tesseract_cmd = r'D:\Programas\tesseract.exe'
+# pytesseract.pytesseract.tesseract_cmd = r'D:\Programas\tesseract.exe'
 def validar_fecha(fecha_texto):
     try:
         # Intentar convertir la fecha usando el formato correcto
@@ -33,11 +33,12 @@ def anverso_opcion_uno(direccion_imagen):
     imagen = enhancer.enhance(2)
     imagen = imagen.filter(ImageFilter.SHARPEN)
     
-    
+    #print('frontal')
     texto_imagen = pytesseract.image_to_string(imagen)
+    #print(texto_imagen)
     texto = texto_imagen.strip()
-    if not texto.startswith("APELLIDOS, NOMBRES"):
-        error_formato = True
+    #if not texto.startswith("APELLIDOS, NOMBRES"):
+    #    error_formato = True
 
     if error_formato== False:
         texto_normalizado = re.sub(r'\n+', '\n', texto.strip())

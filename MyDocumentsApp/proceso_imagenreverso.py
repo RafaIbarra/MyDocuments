@@ -6,7 +6,7 @@ import numpy as np
 from PIL import Image, ImageEnhance, ImageFilter
 
 # pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
-pytesseract.pytesseract.tesseract_cmd = r'D:\Programas\tesseract.exe'
+# pytesseract.pytesseract.tesseract_cmd = r'D:\Programas\tesseract.exe'
 mensaje_deteccion='No detectada correctamente'
 
 def reverso_opcion_uno(direccion_imagen):
@@ -36,11 +36,12 @@ def reverso_opcion_uno(direccion_imagen):
         
         
         texto_imagen = pytesseract.image_to_string(imagen)
-
-        
+        #print('reverso')
+        #print(texto_imagen)
         patron = r"IDPRY.*"
         resultado = re.search(patron, texto_imagen, re.DOTALL)
-        
+        #print('texto original')
+        #print(texto_imagen)
 
         # Si encuentra una coincidencia, extrae el texto
         if resultado:
@@ -159,7 +160,7 @@ def reverso_opcion_uno(direccion_imagen):
                     respuesta_correcta=False
 
         else:
-            error_formato=True
+            error_formato=False
 
         data_respuesta={
             'texto_imagen':texto_imagen,

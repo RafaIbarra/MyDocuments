@@ -10,8 +10,9 @@ import cv2
 import re
 from datetime import datetime
 import numpy as np
+from django.http import HttpResponse
 # pytesseract.pytesseract.tesseract_cmd = r'D:\Programas\tesseract.exe'
-#pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
+# pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
 from .proceso_imagenreverso import *
 from .proceso_imagen_anverso import *
 # Create your views here.
@@ -25,7 +26,7 @@ class OCRView(APIView):
             apellidos=''
             nueva_seccion=''
         # Procesar la imagen con Tesseract OCR
-            imagen = Image.open('E:/SGCapiataFuente/Python/MyDocuments/Backends/MyDocuments/Documentos/20241005_212030.jpg')
+            imagen = Image.open('/home/rafael/Documentos/ProyectosBackend/MyDocuments/Documentos/20241005_212030.jpg')
             texto_extraido = pytesseract.image_to_string(imagen)
 
             
@@ -148,41 +149,15 @@ class OCRView2(APIView):
         # imagen = Image.open('D:/Trabajos/Proyectos/MyDocuments/Backend/MyDocumentsProject/Documentos/20241005_212030.jpg')
         # imagen = Image.open('E:/SGCapiataFuente/Python/MyDocuments/Backends/MyDocuments/Documentos/20241005_212030.jpg')
         # imagen = Image.open('E:/SGCapiataFuente/Python/MyDocuments/Backends/MyDocuments/Documentos/20241005_220402.jpg')
-        img='D:/Trabajos/Proyectos/MyDocuments/Backend/MyDocumentsProject/Documentos/20241005_212030.jpg'
-        repuesta_opcion,texto,textolimpio,numerodocumento,sexo,fecha_vencimiento,estado,nombres,apellidos,fecha_nacimiento,tipo=reverso_opcion_uno(img)
+        # img='D:/Trabajos/Proyectos/MyDocuments/Backend/MyDocumentsProject/Documentos/20241005_212030.jpg'
+        img='/home/rafael/Documentos/ProyectosBackend/MyDocuments/Documentos/20241005_212030.jpg'
+        error_formato_reverso,repuesta_opcion,data_opcion_uno=reverso_opcion_uno(img)
         if repuesta_opcion==False:
             repuesta_opcion,texto,textolimpio,numerodocumento,sexo,fecha_vencimiento,estado,nombres,apellidos,fecha_nacimiento,tipo=reverso_opcion_dos(img)
         # repuesta_opcion=reverso_opcion_uno('E:/SGCapiataFuente/Python/MyDocuments/Backends/MyDocuments/Documentos/20241005_220402.jpg')
-        if repuesta_opcion :
-            respuesta_reverso = {
-                "mensaje": "Datos extraídos exitosamente",
-                "datos": textolimpio,
-                "Texto Original":texto,
-                "Respuesta":repuesta_opcion,
-                "Tipo": tipo,
-                "valores": {
-                    
-                    "Numero Cedula": numerodocumento,
-                    "Sexo": sexo,
-                    "Fecha Vencimiento":fecha_vencimiento,
-                    "Estado": estado,
-                    "Nombres":nombres,
-                    "Apellidos":apellidos,
-                    "Fecha Nacimiento": fecha_nacimiento
-
-                }
-            }
-            #return Response(respuesta_reverso, status=status.HTTP_200_OK)
-    
-        else:
-             respuesta_reverso = {
-                "mensaje": "No se pudo encontrar los datos el texto",
-                "datos": textolimpio,
-                "Texto Original":texto,
-                
-            }
-        img_anverso='D:/Trabajos/Proyectos/MyDocuments/Backend/MyDocumentsProject/Documentos/20241005_222825.jpg'
-        texto_anverso,sexo_anv,fecha_vencimiento_anv,nombres_anv,apellidos_anv,fecha_nacimiento_anv=anverso_opcion_uno(img_anverso)
+        
+        img_anverso='/home/rafael/Documentos/ProyectosBackend/MyDocuments/Documentos/20241005_222825.jpg'
+        error_formato_anverso,texto_anverso, sexo_anv, fecha_vencimiento_anv, nombres_anv, apellidos_anv, fecha_nacimiento_anv=anverso_opcion_uno(img_anverso)
         respuesta_anverso = {
             "mensaje": "Datos extraídos exitosamente",
             
@@ -200,7 +175,7 @@ class OCRView2(APIView):
         }
 
         respuesta={
-            'reverso':respuesta_reverso,
+            'reverso':data_opcion_uno,
             'anverso':respuesta_anverso
         }
 
@@ -226,13 +201,13 @@ class OCRView3(APIView):
             nombres = "No se encontraron nombres"
             numero_documento_corregida=''
 
-            imagen = cv2.imread('E:/SGCapiataFuente/Python/MyDocuments/Backends/MyDocuments/Documentos/20241005_220402.jpg')
+            imagen = cv2.imread('home/rafael/Documentos/ProyectosBackend/MyDocuments/Documentos/20241005_220402.jpg')
             
             gris = cv2.cvtColor(imagen, cv2.COLOR_BGR2GRAY)
             gris = cv2.convertScaleAbs(gris, alpha=1.5, beta=0)
             desenfoque = cv2.GaussianBlur(gris, (5, 5), 0)
             _, binarizada = cv2.threshold(desenfoque, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
-            cv2.imwrite('E:/SGCapiataFuente/Python/MyDocuments/Backends/MyDocuments/Documentos/binarizada.jpg', binarizada)
+            cv2.imwrite('home/rafael/Documentos/ProyectosBackend/MyDocuments/Documentos/binarizada.jpg', binarizada)
             imagen_pil = Image.fromarray(binarizada)
             custom_config = r'--oem 3 --psm 6'
             texto_extraido = pytesseract.image_to_string(imagen_pil, config=custom_config)
@@ -492,12 +467,25 @@ class ViewLecturaImagen(APIView):
             os.remove(img_reverso_path)
             os.remove(img_anverso_path)
         except OSError as e:
-            pass
+           pass
         if error_formato_reverso== False and error_formato_anverso==False:
 
             return Response(respuesta, status=status.HTTP_200_OK)
         else:
             return Response({'mensaje':'Error Formato Imagenes'}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class Home(APIView):
+    
+    
+    def get(self, request, *args, **kwargs):
+        # html_content = "<html><body><h1>Bienvenido</h1></body></html>"
+        # # return Response('Bienvenido', status=status.HTTP_200_OK)
+        # return Response(html_content, status=status.HTTP_200_OK, content_type="text/html")
+    
+        # html_content = "<html><body><h1>Bienvenido</h1></body></html>"
+        html = render(request, 'home2.html')
+        return HttpResponse(html, status=status.HTTP_200_OK, content_type="text/html")
 
             
         
