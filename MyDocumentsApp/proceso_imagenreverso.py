@@ -5,7 +5,7 @@ from datetime import datetime
 import numpy as np
 from PIL import Image, ImageEnhance, ImageFilter
 
-# pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
+pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
 # pytesseract.pytesseract.tesseract_cmd = r'D:\Programas\tesseract.exe'
 mensaje_deteccion='No detectada correctamente'
 
@@ -36,8 +36,7 @@ def reverso_opcion_uno(direccion_imagen):
         
         
         texto_imagen = pytesseract.image_to_string(imagen)
-        #print('reverso')
-        #print(texto_imagen)
+        
         patron = r"IDPRY.*"
         resultado = re.search(patron, texto_imagen, re.DOTALL)
         #print('texto original')
