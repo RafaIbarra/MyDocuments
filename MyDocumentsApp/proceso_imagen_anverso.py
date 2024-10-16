@@ -4,8 +4,8 @@ import re
 from datetime import datetime
 import numpy as np
 from PIL import Image, ImageEnhance, ImageFilter
-pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
-# pytesseract.pytesseract.tesseract_cmd = r'D:\Programas\tesseract.exe'
+# pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
+pytesseract.pytesseract.tesseract_cmd = r'D:\Programas\tesseract.exe'
 def validar_fecha(fecha_texto):
     try:
         # Intentar convertir la fecha usando el formato correcto
@@ -125,18 +125,26 @@ def anverso_opcion_dos(direccion_imagen):
 
     # Definir la región de interés (opcional, ajusta los valores de acuerdo a tu imagen)
     # Puedes comentar esto si deseas procesar toda la imagen
-    left, top, right, bottom = 100, 50, 500, 200  # Coordenadas del área donde está el texto
+    ancho, alto = imagen.size
+    left = 0
+    # top = 0
+    top = 400
+    right = ancho // 2  # Mitad del ancho
+    bottom = alto
+    # left, top, right, bottom = 100, 50, 500, 200  # Coordenadas del área donde está el texto
     region_interes = imagen.crop((left, top, right, bottom))
 
     # Configurar Tesseract con el modo de segmentación de páginas
     config = '--psm 4'  # PSM 6: bloques uniformes de texto (puedes probar otros valores)
 
     # Extraer el texto de la imagen (o de la región de interés)
-    texto_imagen = pytesseract.image_to_string(imagen , config=config)
+    texto_imagen = pytesseract.image_to_string(region_interes , config=config)
     print('OPCION DOS')
     print(texto_imagen)
     texto = texto_imagen.strip()
-    imagen.save('E:/SGCapiataFuente/Python/MyDocuments/Backends/MyDocuments/Documentos/imagen_procesada.jpg')
+    # imagen.save('E:/SGCapiataFuente/Python/MyDocuments/Backends/MyDocuments/Documentos/imagen_procesada.jpg')
+    imagen.save('D:/Trabajos/Proyectos/MyDocuments/Backend/MyDocumentsProject/Documentos/imagen_procesada.jpg')
+    region_interes.save('D:/Trabajos/Proyectos/MyDocuments/Backend/MyDocumentsProject/Documentos/region_interes.jpg')
     #if not texto.startswith("APELLIDOS, NOMBRES"):
     #    error_formato = True
 
