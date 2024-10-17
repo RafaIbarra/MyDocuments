@@ -1,11 +1,13 @@
+import os
+from django.conf import settings
 import pytesseract
 import cv2
 import re
 from datetime import datetime
 import numpy as np
 from PIL import Image, ImageEnhance, ImageFilter
-# pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
-pytesseract.pytesseract.tesseract_cmd = r'D:\Programas\tesseract.exe'
+pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
+# pytesseract.pytesseract.tesseract_cmd = r'D:\Programas\tesseract.exe'
 def validar_fecha(fecha_texto):
     try:
         # Intentar convertir la fecha usando el formato correcto
@@ -125,12 +127,17 @@ def anverso_opcion_dos(direccion_imagen):
 
     # Definir la región de interés (opcional, ajusta los valores de acuerdo a tu imagen)
     # Puedes comentar esto si deseas procesar toda la imagen
+    imagen.save('E:/SGCapiataFuente/Python/MyDocuments/Backends/MyDocuments/Documentos/imagen_procesada.jpg')
+
+    #Region Para Apellido
     ancho, alto = imagen.size
-    left = 0
+    left = 750
     # top = 0
-    top = 400
-    right = ancho // 2  # Mitad del ancho
-    bottom = alto
+    top = 470
+    # right = ancho // 2  # Mitad del ancho
+    right = 1600  # Mitad del ancho
+    # bottom = alto
+    bottom = 600
     # left, top, right, bottom = 100, 50, 500, 200  # Coordenadas del área donde está el texto
     region_interes = imagen.crop((left, top, right, bottom))
 
@@ -139,12 +146,39 @@ def anverso_opcion_dos(direccion_imagen):
 
     # Extraer el texto de la imagen (o de la región de interés)
     texto_imagen = pytesseract.image_to_string(region_interes , config=config)
-    print('OPCION DOS')
+    print('El Apellido es:')
     print(texto_imagen)
     texto = texto_imagen.strip()
-    # imagen.save('E:/SGCapiataFuente/Python/MyDocuments/Backends/MyDocuments/Documentos/imagen_procesada.jpg')
-    imagen.save('D:/Trabajos/Proyectos/MyDocuments/Backend/MyDocumentsProject/Documentos/imagen_procesada.jpg')
-    region_interes.save('D:/Trabajos/Proyectos/MyDocuments/Backend/MyDocumentsProject/Documentos/region_interes.jpg')
+    
+    img_region = os.path.join('E:/SGCapiataFuente/Python/MyDocuments/Backends/MyDocuments/Documentos/', f'region_apellido_{'left-',left,'top-',top, 'bottom-',bottom ,'right-',right}.jpg')
+    region_interes.save(img_region)
+
+    # Region Nombre
+    left = 750
+    # top = 0
+    top = 640
+    # right = ancho // 2  # Mitad del ancho
+    right = 1600  # Mitad del ancho
+    # bottom = alto
+    bottom = 720
+    # left, top, right, bottom = 100, 50, 500, 200  # Coordenadas del área donde está el texto
+    region_interes_nombres = imagen.crop((left, top, right, bottom))
+
+    # Configurar Tesseract con el modo de segmentación de páginas
+    config = '--psm 4'  # PSM 6: bloques uniformes de texto (puedes probar otros valores)
+
+    # Extraer el texto de la imagen (o de la región de interés)
+    texto_imagen_nombres = pytesseract.image_to_string(region_interes_nombres , config=config)
+    print('El Nombre:')
+    print(texto_imagen_nombres)
+    texto = texto_imagen.strip()
+    
+    img_region_nombre = os.path.join('E:/SGCapiataFuente/Python/MyDocuments/Backends/MyDocuments/Documentos/', f'region_nombres_{'left-',left,'top-',top, 'bottom-',bottom ,'right-',right}.jpg')
+    region_interes_nombres.save(img_region_nombre)
+
+
+    # imagen.save('D:/Trabajos/Proyectos/MyDocuments/Backend/MyDocumentsProject/Documentos/imagen_procesada.jpg')
+    # region_interes.save('D:/Trabajos/Proyectos/MyDocuments/Backend/MyDocumentsProject/Documentos/region_interes.jpg')
     #if not texto.startswith("APELLIDOS, NOMBRES"):
     #    error_formato = True
 
