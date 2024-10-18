@@ -5,8 +5,8 @@ from datetime import datetime
 import numpy as np
 from PIL import Image, ImageEnhance, ImageFilter
 
-# pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
-pytesseract.pytesseract.tesseract_cmd = r'D:\Programas\tesseract.exe'
+pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
+# pytesseract.pytesseract.tesseract_cmd = r'D:\Programas\tesseract.exe'
 mensaje_deteccion='No detectada correctamente'
 
 def reverso_opcion_uno(direccion_imagen):

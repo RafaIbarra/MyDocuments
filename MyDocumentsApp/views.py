@@ -445,7 +445,7 @@ class ViewLecturaImagen(APIView):
 
 
         # Procesar la imagen del anverso
-        error_formato_anverso,texto_anverso, sexo_anv, fecha_vencimiento_anv, nombres_anv, apellidos_anv, fecha_nacimiento_anv = anverso_opcion_uno(img_anverso_path)
+        error_formato_anverso,texto_anverso, sexo_anv, fecha_vencimiento_anv, nombres_anv, apellidos_anv, fecha_nacimiento_anv = anverso_opcion_dos(img_anverso_path)
         if error_formato_anverso == False:
             respuesta_anverso = {
                 "mensaje": "Datos extraídos exitosamente",
