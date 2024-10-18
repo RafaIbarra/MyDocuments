@@ -17,6 +17,7 @@ from django.http import HttpResponse
 # from .proceso_imagen_anverso import *
 from MyDocumentsApp.ProcesarImagenes.pytesseract.proceso_imagenreverso import *
 from MyDocumentsApp.ProcesarImagenes.pytesseract.proceso_imagen_anverso import *
+from MyDocumentsApp.ProcesarImagenes.pytesseract.ReversoFormatoNuevo import *
 # Create your views here.
 class OCRView(APIView):
     def get(self, request):
@@ -388,10 +389,12 @@ class ViewLecturaImagen(APIView):
         
         # Llamar a tus funciones con las imágenes guardadas
         error_formato_reverso,repuesta_opcion,data_opcion_uno = reverso_opcion_uno(img_reverso_path)
+        print('Reverso Formato 1: ',error_formato_reverso, ' la respuesta 1: ',repuesta_opcion)
         if error_formato_reverso == False:
             
             if repuesta_opcion==False:
                 error_formato_reverso,repuesta_opcion_dos, data_opcion_dos = reverso_opcion_dos(img_reverso_path)
+                print('Reverso Formato 2: ',error_formato_reverso)
 
                 if repuesta_opcion_dos:
                     
@@ -425,7 +428,7 @@ class ViewLecturaImagen(APIView):
                  tipo=data_opcion_uno['tipo_opcion']
         else:
             mensaje='Error de Formato'
-
+            error_formato_reverso,repuesta_opcion,data_opcion_uno = Formato_Nuevo_Reverso(img_reverso_path)
         respuesta_reverso = {
             "mensaje": mensaje,
             "datos": textolimpio,

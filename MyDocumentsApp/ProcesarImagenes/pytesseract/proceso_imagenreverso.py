@@ -159,7 +159,8 @@ def reverso_opcion_uno(direccion_imagen):
                     respuesta_correcta=False
 
         else:
-            error_formato=False
+            error_formato=True
+            respuesta_correcta=False
 
         data_respuesta={
             'texto_imagen':texto_imagen,

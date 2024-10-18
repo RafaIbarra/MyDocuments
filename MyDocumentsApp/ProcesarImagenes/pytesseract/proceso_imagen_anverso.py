@@ -6,8 +6,8 @@ import re
 from datetime import datetime
 import numpy as np
 from PIL import Image, ImageEnhance, ImageFilter
-# pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
-pytesseract.pytesseract.tesseract_cmd = r'D:\Programas\tesseract.exe'
+pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
+# pytesseract.pytesseract.tesseract_cmd = r'D:\Programas\tesseract.exe'
 def validar_fecha(fecha_texto):
     try:
         # Intentar convertir la fecha usando el formato correcto
@@ -134,18 +134,18 @@ def anverso_opcion_dos(direccion_imagen):
     imagen = imagen.resize((imagen.width * 2, imagen.height * 2), Image.Resampling.LANCZOS)
 
     texto_imagen = pytesseract.image_to_string(imagen)
-    print('Aumentar la resolución: ',texto_imagen)
-    print('*************---------------***************------------************')
+    # print('Aumentar la resolución: ',texto_imagen)
+    # print('*************---------------***************------------************')
 
 
 
 
     # Definir la región de interés (opcional, ajusta los valores de acuerdo a tu imagen)
     # Puedes comentar esto si deseas procesar toda la imagen
-
+    path_base='E:/SGCapiataFuente/Python/MyDocuments/Backends/MyDocuments/Documentos/'
     
     # imagen.save('E:/SGCapiataFuente/Python/MyDocuments/Backends/MyDocuments/Documentos/imagen_procesada.jpg')
-    imagen.save('D:/Trabajos/Proyectos/MyDocuments/Backend/MyDocumentsProject/Documentos/imagen_procesada.jpg')
+    imagen.save(os.path.join(path_base,'imagen_procesada.jpg'))
 
     #Region Para Apellido
     ancho, alto = imagen.size
@@ -164,14 +164,14 @@ def anverso_opcion_dos(direccion_imagen):
 
     # Extraer el texto de la imagen (o de la región de interés)
     texto_imagen = pytesseract.image_to_string(region_interes , config=config)
-    print('El Apellido es:')
-    print(texto_imagen)
+    # print('El Apellido es:')
+    # print(texto_imagen)
     texto = texto_imagen.strip()
     
     # img_region = os.path.join('E:/SGCapiataFuente/Python/MyDocuments/Backends/MyDocuments/Documentos/', f'region_apellido_{'left-',left,'top-',top, 'bottom-',bottom ,'right-',right}.jpg')
     # img_region = os.path.join('D:/Trabajos/Proyectos/MyDocuments/Backend/MyDocumentsProject/Documentos/', f'region_apellido_{'left-',left,'top-',top, 'bottom-',bottom ,'right-',right}.jpg')
-    img_region = os.path.join('D:/Trabajos/Proyectos/MyDocuments/Backend/MyDocumentsProject/Documentos/', f'region_apellido_left-{left}_top-{top}_bottom-{bottom}_right-{right}.jpg')
-    region_interes.save(img_region)
+    img_region = os.path.join(path_base, f'region_apellido_left-{left}_top-{top}_bottom-{bottom}_right-{right}.jpg')
+    #region_interes.save(img_region)
 
     # Region Nombre
     left = 750
@@ -189,14 +189,14 @@ def anverso_opcion_dos(direccion_imagen):
 
     # Extraer el texto de la imagen (o de la región de interés)
     texto_imagen_nombres = pytesseract.image_to_string(region_interes_nombres , config=config)
-    print('El Nombre:')
-    print(texto_imagen_nombres)
+    # print('El Nombre:')
+    # print(texto_imagen_nombres)
     texto = texto_imagen.strip()
     
     # img_region_nombre = os.path.join('E:/SGCapiataFuente/Python/MyDocuments/Backends/MyDocuments/Documentos/', f'region_nombres_{'left-',left,'top-',top, 'bottom-',bottom ,'right-',right}.jpg')
     
-    img_region_nombre = os.path.join('D:/Trabajos/Proyectos/MyDocuments/Backend/MyDocumentsProject/Documentos/', f'region_nombre_left-{left}_top-{top}_bottom-{bottom}_right-{right}.jpg')
-    region_interes_nombres.save(img_region_nombre)
+    img_region_nombre = os.path.join(path_base, f'region_nombre_left-{left}_top-{top}_bottom-{bottom}_right-{right}.jpg')
+    #region_interes_nombres.save(img_region_nombre)
 
 
     # Region Fecha nacimiento
@@ -217,14 +217,14 @@ def anverso_opcion_dos(direccion_imagen):
 
     # Extraer el texto de la imagen (o de la región de interés)
     texto_imagen = pytesseract.image_to_string(region_interes , config=config)
-    print('Fecha Nacimiento es:')
-    print(texto_imagen)
+    # print('Fecha Nacimiento es:')
+    # print(texto_imagen)
     texto = texto_imagen.strip()
     
     # img_region = os.path.join('E:/SGCapiataFuente/Python/MyDocuments/Backends/MyDocuments/Documentos/', f'region_apellido_{'left-',left,'top-',top, 'bottom-',bottom ,'right-',right}.jpg')
     # img_region = os.path.join('D:/Trabajos/Proyectos/MyDocuments/Backend/MyDocumentsProject/Documentos/', f'region_apellido_{'left-',left,'top-',top, 'bottom-',bottom ,'right-',right}.jpg')
-    img_region = os.path.join('D:/Trabajos/Proyectos/MyDocuments/Backend/MyDocumentsProject/Documentos/', f'region_nacimiento_left-{left}_top-{top}_bottom-{bottom}_right-{right}.jpg')
-    region_interes.save(img_region)
+    img_region = os.path.join(path_base, f'region_nacimiento_left-{left}_top-{top}_bottom-{bottom}_right-{right}.jpg')
+    #region_interes.save(img_region)
 
 
     # Region Numero cedula
@@ -245,14 +245,14 @@ def anverso_opcion_dos(direccion_imagen):
 
     # Extraer el texto de la imagen (o de la región de interés)
     texto_imagen = pytesseract.image_to_string(region_interes , config=config)
-    print('Numero cedula es:')
-    print(texto_imagen)
+    # print('Numero cedula es:')
+    # print(texto_imagen)
     texto = texto_imagen.strip()
     
     # img_region = os.path.join('E:/SGCapiataFuente/Python/MyDocuments/Backends/MyDocuments/Documentos/', f'region_apellido_{'left-',left,'top-',top, 'bottom-',bottom ,'right-',right}.jpg')
     # img_region = os.path.join('D:/Trabajos/Proyectos/MyDocuments/Backend/MyDocumentsProject/Documentos/', f'region_apellido_{'left-',left,'top-',top, 'bottom-',bottom ,'right-',right}.jpg')
-    img_region = os.path.join('D:/Trabajos/Proyectos/MyDocuments/Backend/MyDocumentsProject/Documentos/', f'region_cedula_left-{left}_top-{top}_bottom-{bottom}_right-{right}.jpg')
-    region_interes.save(img_region)
+    img_region = os.path.join(path_base, f'region_cedula_left-{left}_top-{top}_bottom-{bottom}_right-{right}.jpg')
+    #region_interes.save(img_region)
 
      #Region vencimiento
     ancho, alto = imagen.size
@@ -260,7 +260,7 @@ def anverso_opcion_dos(direccion_imagen):
     # top = 0
     top = 450
     # right = ancho // 2  # Mitad del ancho
-    print('ancho es ', ancho)
+    
     right = 1950  # Mitad del ancho
     # bottom = alto
     bottom = 600
@@ -272,14 +272,14 @@ def anverso_opcion_dos(direccion_imagen):
 
     # Extraer el texto de la imagen (o de la región de interés)
     texto_imagen = pytesseract.image_to_string(region_interes , config=config)
-    print('El vencimiento es:')
-    print(texto_imagen)
+    # print('El vencimiento es:')
+    # print(texto_imagen)
     texto = texto_imagen.strip()
     
     # img_region = os.path.join('E:/SGCapiataFuente/Python/MyDocuments/Backends/MyDocuments/Documentos/', f'region_apellido_{'left-',left,'top-',top, 'bottom-',bottom ,'right-',right}.jpg')
     # img_region = os.path.join('D:/Trabajos/Proyectos/MyDocuments/Backend/MyDocumentsProject/Documentos/', f'region_apellido_{'left-',left,'top-',top, 'bottom-',bottom ,'right-',right}.jpg')
-    img_region = os.path.join('D:/Trabajos/Proyectos/MyDocuments/Backend/MyDocumentsProject/Documentos/', f'region_vencimiento_left-{left}_top-{top}_bottom-{bottom}_right-{right}.jpg')
-    region_interes.save(img_region)
+    img_region = os.path.join(path_base, f'region_vencimiento_left-{left}_top-{top}_bottom-{bottom}_right-{right}.jpg')
+    #region_interes.save(img_region)
 
 
     
