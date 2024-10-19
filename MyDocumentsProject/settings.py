@@ -142,3 +142,6 @@ CORS_ALLOW_HEADERS = [
     'signal',
     'Access-Control-Allow-Origin'
 ]
+
+PATH_IMAGEN_TRANSFORMADA='E:/SGCapiataFuente/Python/MyDocuments/Backends/MyDocuments/Documentos/'
+DIRECCION_TESSERACT=r'C:\Program Files\Tesseract-OCR\tesseract.exe'

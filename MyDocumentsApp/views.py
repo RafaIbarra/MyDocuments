@@ -11,13 +11,15 @@ import re
 from datetime import datetime
 import numpy as np
 from django.http import HttpResponse
-# pytesseract.pytesseract.tesseract_cmd = r'D:\Programas\tesseract.exe'
-# pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
-# from .proceso_imagenreverso import *
-# from .proceso_imagen_anverso import *
-from MyDocumentsApp.ProcesarImagenes.pytesseract.proceso_imagenreverso import *
-from MyDocumentsApp.ProcesarImagenes.pytesseract.proceso_imagen_anverso import *
-from MyDocumentsApp.ProcesarImagenes.pytesseract.ReversoFormatoNuevo import *
+
+
+
+
+
+from MyDocumentsApp.ProcesarImagenes.pytesseract.ProcesamientoImagen.FormatoCedula2023.procesamiento_frontal import *
+from MyDocumentsApp.ProcesarImagenes.pytesseract.ProcesamientoImagen.FormatoCedula2023.procesamiento_reverso import *
+
+from MyDocumentsApp.ProcesarImagenes.pytesseract.ProcesamientoImagen.FormatoCedula2024.procesamiento_reverso import *
 # Create your views here.
 class OCRView(APIView):
     def get(self, request):
@@ -448,7 +450,7 @@ class ViewLecturaImagen(APIView):
 
 
         # Procesar la imagen del anverso
-        error_formato_anverso,texto_anverso, sexo_anv, fecha_vencimiento_anv, nombres_anv, apellidos_anv, fecha_nacimiento_anv = anverso_opcion_dos(img_anverso_path)
+        error_formato_anverso,texto_anverso, sexo_anv, fecha_vencimiento_anv, nombres_anv, apellidos_anv, fecha_nacimiento_anv = frontal_opcion_dos(img_anverso_path)
         if error_formato_anverso == False:
             respuesta_anverso = {
                 "mensaje": "Datos extraídos exitosamente",

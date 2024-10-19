@@ -6,7 +6,9 @@ from datetime import datetime
 import numpy as np
 from PIL import Image, ImageEnhance, ImageFilter
 
-pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
+from ...TransformacionImagen import *
+
+
 
 def Formato_Nuevo_Reverso(direccion_imagen):
     seccion_1 =''
@@ -26,39 +28,40 @@ def Formato_Nuevo_Reverso(direccion_imagen):
     mensaje_deteccion=''
     
     respuesta_correcta=True
-    imagen = Image.open(direccion_imagen)
+    # imagen = Image.open(direccion_imagen)
 
-    # Convertir la imagen a escala de grises
-    imagen = imagen.convert('L')
+    # # Convertir la imagen a escala de grises
+    # imagen = imagen.convert('L')
 
-     # # Aumentar el brillo
-    enhancer = ImageEnhance.Brightness(imagen)
-    imagen = enhancer.enhance(3)  # Ajustar el nivel de brillo (puedes probar con diferentes valores)
+    #  # # Aumentar el brillo
+    # enhancer = ImageEnhance.Brightness(imagen)
+    # imagen = enhancer.enhance(3)  # Ajustar el nivel de brillo (puedes probar con diferentes valores)
     
 
-    # # Aumentar el contraste
-    enhancer = ImageEnhance.Contrast(imagen)
-    imagen = enhancer.enhance(3)  # Ajustar el nivel de contraste
+    # # # Aumentar el contraste
+    # enhancer = ImageEnhance.Contrast(imagen)
+    # imagen = enhancer.enhance(3)  # Ajustar el nivel de contraste
     
 
-    # # Aplicar filtro para mejorar los bordes y nitidez
-    imagen = imagen.filter(ImageFilter.SHARPEN)
+    # # # Aplicar filtro para mejorar los bordes y nitidez
+    # imagen = imagen.filter(ImageFilter.SHARPEN)
 
     
 
-    # # Aplicar binarización (umbralización) para mejorar el contraste
-    threshold_value = 128  # Valor de umbral (ajustable)
-    imagen = imagen.point(lambda p: p > threshold_value and 255)
+    # # # Aplicar binarización (umbralización) para mejorar el contraste
+    # threshold_value = 128  # Valor de umbral (ajustable)
+    # imagen = imagen.point(lambda p: p > threshold_value and 255)
     
 
-    # # Aplicar un filtro para reducir el ruido (opcional)
-    imagen = imagen.filter(ImageFilter.MedianFilter(size=3))  # Filtro de Mediana para suavizar la imagen
+    # # # Aplicar un filtro para reducir el ruido (opcional)
+    # imagen = imagen.filter(ImageFilter.MedianFilter(size=3))  # Filtro de Mediana para suavizar la imagen
 
-    # # Aumentar la resolución (opcional si el texto está borroso)
-    imagen = imagen.resize((imagen.width * 15, imagen.height * 15), Image.Resampling.LANCZOS)
-    path_base='E:/SGCapiataFuente/Python/MyDocuments/Backends/MyDocuments/Documentos/'
-    imagen.save(os.path.join(path_base,'imagen_procesada_reverso.jpg'))
-    texto_imagen = pytesseract.image_to_string(imagen)
+    # # # Aumentar la resolución (opcional si el texto está borroso)
+    # imagen = imagen.resize((imagen.width * 5, imagen.height * 5), Image.Resampling.LANCZOS)
+    # path_base='E:/SGCapiataFuente/Python/MyDocuments/Backends/MyDocuments/Documentos/'
+    # imagen.save(os.path.join(path_base,'imagen_procesada_reverso.jpg'))
+    # texto_imagen = pytesseract.image_to_string(imagen)
+    texto_imagen=Configuracion_inicial(direccion_imagen,'imagen_procesada_reverso.jpg')
     # print(texto_imagen)
     patron = r"INPRY.*"
     resultado = re.search(patron, texto_imagen, re.DOTALL)
