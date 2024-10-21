@@ -20,6 +20,7 @@ from MyDocumentsApp.ProcesarImagenes.pytesseract.ProcesamientoImagen.FormatoCedu
 from MyDocumentsApp.ProcesarImagenes.pytesseract.ProcesamientoImagen.FormatoCedula2023.procesamiento_reverso import *
 
 from MyDocumentsApp.ProcesarImagenes.pytesseract.ProcesamientoImagen.FormatoCedula2024.procesamiento_reverso import *
+from MyDocumentsApp.ProcesarImagenes.pytesseract.ProcesamientoImagen.FormatoCedula2024.procesamiento_frontal import *
 # Create your views here.
 class OCRView(APIView):
     def get(self, request):
@@ -156,13 +157,13 @@ class OCRView2(APIView):
         # imagen = Image.open('E:/SGCapiataFuente/Python/MyDocuments/Backends/MyDocuments/Documentos/20241005_220402.jpg')
         # img='D:/Trabajos/Proyectos/MyDocuments/Backend/MyDocumentsProject/Documentos/20241005_212030.jpg'
         img='/home/rafael/Documentos/ProyectosBackend/MyDocuments/Documentos/20241005_212030.jpg'
-        error_formato_reverso,repuesta_opcion,data_opcion_uno=reverso_opcion_uno(img)
+        error_formato_reverso,repuesta_opcion,data_opcion_uno=cedula2023_reverso_opcion_uno(img)
         if repuesta_opcion==False:
-            repuesta_opcion,texto,textolimpio,numerodocumento,sexo,fecha_vencimiento,estado,nombres,apellidos,fecha_nacimiento,tipo=reverso_opcion_dos(img)
+            repuesta_opcion,texto,textolimpio,numerodocumento,sexo,fecha_vencimiento,estado,nombres,apellidos,fecha_nacimiento,tipo=cedula2023_reverso_opcion_dos(img)
         # repuesta_opcion=reverso_opcion_uno('E:/SGCapiataFuente/Python/MyDocuments/Backends/MyDocuments/Documentos/20241005_220402.jpg')
         
         img_anverso='/home/rafael/Documentos/ProyectosBackend/MyDocuments/Documentos/20241005_222825.jpg'
-        error_formato_anverso,texto_anverso, sexo_anv, fecha_vencimiento_anv, nombres_anv, apellidos_anv, fecha_nacimiento_anv=anverso_opcion_uno(img_anverso)
+        error_formato_anverso,texto_anverso, sexo_anv, fecha_vencimiento_anv, nombres_anv, apellidos_anv, fecha_nacimiento_anv=cedula2023_frontal_opcion_uno(img_anverso)
         respuesta_anverso = {
             "mensaje": "Datos extraídos exitosamente",
             
@@ -390,52 +391,36 @@ class ViewLecturaImagen(APIView):
         tipo = ''
         
         # Llamar a tus funciones con las imágenes guardadas
-        error_formato_reverso,repuesta_opcion,data_opcion_uno = reverso_opcion_uno(img_reverso_path)
-        print('Reverso Formato 1: ',error_formato_reverso, ' la respuesta 1: ',repuesta_opcion)
-        if error_formato_reverso == False:
+        error_formato_reverso,repuesta_opcion,data_reverso = cedula2023_reverso_opcion_uno(img_reverso_path) # opcion 1 de formato 2023
+        # print('Reverso Formato 1: ',error_formato_reverso, ' la respuesta 1: ',repuesta_opcion)
+
+        # if error_formato_reverso == False:
             
-            if repuesta_opcion==False:
-                error_formato_reverso,repuesta_opcion_dos, data_opcion_dos = reverso_opcion_dos(img_reverso_path)
-                print('Reverso Formato 2: ',error_formato_reverso)
+        #     if repuesta_opcion==False:
+        #         error_formato_reverso,repuesta_opcion_dos, data_reverso = cedula2023_reverso_opcion_dos(img_reverso_path) # opcion 2 de formato 2023
+            
+        # else:
+        #     error_formato_reverso,repuesta_opcion,data_reverso = cedula2024_reverso_opcion_uno(img_reverso_path) # opcion 1 de formato 2024
+            
+            
 
-                if repuesta_opcion_dos:
-                    
-                    mensaje= "Datos extraídos exitosamente"
-                    texto=data_opcion_dos['texto_imagen']
-                    textolimpio=data_opcion_dos['texto_sin_espacios'],
-                    numerodocumento=data_opcion_dos['numero_documento_res'] 
-                    sexo=data_opcion_dos['sexo_resp']
-                    fecha_vencimiento=data_opcion_dos['fecha_vencimiento_resp']
-                    estado=data_opcion_dos['estado_resp']
-                    nombres=data_opcion_dos['nombres_resp']
-                    apellidos=data_opcion_dos['apellidos_resp']
-                    fecha_nacimiento=data_opcion_dos['fecha_nacimiento_resp']
-                    tipo=data_opcion_dos['tipo_opcion']
-                else:
-                    mensaje= "No se pudo encontrar los datos en el texto"
-                    
-
-
-            else:
-                 mensaje= "Datos extraídos exitosamente"
-                 texto=data_opcion_uno['texto_imagen']
-                 textolimpio=data_opcion_uno['texto_sin_espacios'],
-                 numerodocumento=data_opcion_uno['numero_documento_res'] 
-                 sexo=data_opcion_uno['sexo_resp']
-                 fecha_vencimiento=data_opcion_uno['fecha_vencimiento_resp']
-                 estado=data_opcion_uno['estado_resp']
-                 nombres=data_opcion_uno['nombres_resp']
-                 apellidos=data_opcion_uno['apellidos_resp']
-                 fecha_nacimiento=data_opcion_uno['fecha_nacimiento_resp']
-                 tipo=data_opcion_uno['tipo_opcion']
-        else:
-            mensaje='Error de Formato'
-            error_formato_reverso,repuesta_opcion,data_opcion_uno = Formato_Nuevo_Reverso(img_reverso_path)
+        texto=data_reverso['texto_imagen']
+        textolimpio=data_reverso['texto_sin_espacios'],
+        numerodocumento=data_reverso['numero_documento_res'] 
+        sexo=data_reverso['sexo_resp']
+        fecha_vencimiento=data_reverso['fecha_vencimiento_resp']
+        estado=data_reverso['estado_resp']
+        nombres=data_reverso['nombres_resp']
+        apellidos=data_reverso['apellidos_resp']
+        fecha_nacimiento=data_reverso['fecha_nacimiento_resp']
+        tipo_opcion=data_reverso['tipo_opcion']
+        mensaje=data_reverso['mensaje']
+            
         respuesta_reverso = {
             "mensaje": mensaje,
             "datos": textolimpio,
             "Texto Original": texto,
-            "tipo":tipo,
+            
             "valores": {
                 "Numero Cedula": numerodocumento,
                 "Sexo": sexo,
@@ -443,43 +428,60 @@ class ViewLecturaImagen(APIView):
                 "Estado": estado,
                 "Nombres": nombres,
                 "Apellidos": apellidos,
-                "Fecha Nacimiento": fecha_nacimiento
+                "Fecha Nacimiento": fecha_nacimiento,
+                "tipo_opcion":tipo_opcion
             }
         }
 
 
 
-        # Procesar la imagen del anverso
-        error_formato_anverso,texto_anverso, sexo_anv, fecha_vencimiento_anv, nombres_anv, apellidos_anv, fecha_nacimiento_anv = frontal_opcion_dos(img_anverso_path)
-        if error_formato_anverso == False:
-            respuesta_anverso = {
-                "mensaje": "Datos extraídos exitosamente",
-                "Texto Original": texto_anverso,
-                "valores": {
-                    "Sexo": sexo_anv,
-                    "Fecha Vencimiento": fecha_vencimiento_anv,
-                    "Nombres": nombres_anv,
-                    "Apellidos": apellidos_anv,
-                    "Fecha Nacimiento": fecha_nacimiento_anv
-                }
+        # Procesar la imagen Frontal
+        error_formato_anverso,data_frontal = cedula2023_frontal_opcion_uno(img_anverso_path) # opcion 1 formato 2023
+        # if error_formato_anverso:
+        #     error_formato_anverso,data_frontal = cedula2024_frontal_opcion_uno(img_anverso_path) # opcion 1 formato 2024
+        
+        texto_anverso=data_frontal['texto_imagen']
+        sexo_anv=data_frontal['sexo_resp']
+        fecha_vencimiento_anv=data_frontal['fecha_vencimiento_resp']
+        nombres_anv=data_frontal['nombres_resp']
+        apellidos_anv=data_frontal['apellidos_resp']
+        fecha_nacimiento_anv=data_frontal['fecha_nacimiento_resp']
+        
+            
+
+        # error_formato_anverso,texto_anverso, sexo_anv, fecha_vencimiento_anv, nombres_anv, apellidos_anv, fecha_nacimiento_anv = cedula2024_frontal_opcion_regiones(img_anverso_path)
+        
+        respuesta_anverso = {
+            "mensaje": "Datos extraídos exitosamente",
+            "Texto Original": texto_anverso,
+            "valores": {
+                "Sexo": sexo_anv,
+                "Fecha Vencimiento": fecha_vencimiento_anv,
+                "Nombres": nombres_anv,
+                "Apellidos": apellidos_anv,
+                "Fecha Nacimiento": fecha_nacimiento_anv
             }
+        }
 
             # Respuesta final que incluye reverso y anverso
-            respuesta = {
-                'reverso': respuesta_reverso,
-                'anverso': respuesta_anverso
-            }
+        respuesta = {
+            'reverso': respuesta_reverso,
+            'anverso': respuesta_anverso
+        }
 
         try:
             os.remove(img_reverso_path)
             os.remove(img_anverso_path)
         except OSError as e:
            pass
-        if error_formato_reverso== False and error_formato_anverso==False:
 
-            return Response(respuesta, status=status.HTTP_200_OK)
-        else:
-            return Response({'mensaje':'Error Formato Imagenes'}, status=status.HTTP_400_BAD_REQUEST)
+        return Response(respuesta, status=status.HTTP_200_OK)
+        
+        # if error_formato_reverso== False and error_formato_anverso==False:
+
+        #     return Response(respuesta, status=status.HTTP_200_OK)
+        # else:
+        #     return Response({'mensaje':'Error Formato Imagenes'}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class Home(APIView):

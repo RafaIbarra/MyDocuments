@@ -10,7 +10,7 @@ if os.name == 'nt':  # 'nt' es el identificador de Windows en Python
     pytesseract.pytesseract.tesseract_cmd = settings.DIRECCION_TESSERACT
 
 def Configuracion_inicial(direccion_imagen,nombrearchivotransformado):
-    print('En la funcion')
+    
     imagen = Image.open(direccion_imagen)
      # Convertir la imagen a escala de grises
     imagen = imagen.convert('L')
@@ -40,16 +40,21 @@ def Configuracion_inicial(direccion_imagen,nombrearchivotransformado):
 
     # # Aumentar la resolución (opcional si el texto está borroso)
     imagen = imagen.resize((imagen.width * 5, imagen.height * 5), Image.Resampling.LANCZOS)
+    # imagen = imagen.resize((imagen.width * 9, imagen.height * 9), Image.Resampling.LANCZOS)
     path_base=settings.PATH_IMAGEN_TRANSFORMADA
     imagen.save(os.path.join(path_base,nombrearchivotransformado))
     texto_imagen = pytesseract.image_to_string(imagen)
+    print('EL TEXTO DE VUELTO ES')
+    print(texto_imagen)
 
     return texto_imagen
 
 
 def Configuracion_frontal(direccion_imagen,nombrearchivotransformado):
-    print('En la funcion dos')
+    
     imagen = Image.open(direccion_imagen)
+    ancho, alto = imagen.size
+   
     
     # Convertir la imagen a escala de grises
     imagen = imagen.convert('L')
@@ -87,4 +92,49 @@ def Configuracion_frontal(direccion_imagen,nombrearchivotransformado):
 
     texto_imagen = pytesseract.image_to_string(imagen)
 
+    return texto_imagen,imagen
+
+
+def Configuracion_reverso_2023(direccion_imagen,nombrearchivotransformado):
+    
+    
+   
+    imagen = Image.open(direccion_imagen)
+    imagen = imagen.resize((imagen.width * 2, imagen.height * 2), Image.Resampling.LANCZOS)
+
+
+    
+    imagen = imagen.convert('L')
+    enhancer = ImageEnhance.Brightness(imagen)
+    imagen = enhancer.enhance(1.5)
+    enhancer = ImageEnhance.Contrast(imagen)
+    imagen = enhancer.enhance(2)
+    imagen = imagen.filter(ImageFilter.SHARPEN)
+
+    path_base=settings.PATH_IMAGEN_TRANSFORMADA
+    imagen.save(os.path.join(path_base,nombrearchivotransformado))
+
+    texto_imagen = pytesseract.image_to_string(imagen)
+    
+    return texto_imagen,imagen
+
+def Configuracion_frontal_2023(direccion_imagen,nombrearchivotransformado):
+    
+    imagen = Image.open(direccion_imagen)
+    imagen = imagen.resize((imagen.width * 1, imagen.height * 1), Image.Resampling.LANCZOS)
+
+
+    
+    imagen = imagen.convert('L')
+    enhancer = ImageEnhance.Brightness(imagen)
+    imagen = enhancer.enhance(1.5)
+    enhancer = ImageEnhance.Contrast(imagen)
+    imagen = enhancer.enhance(2)
+    imagen = imagen.filter(ImageFilter.SHARPEN)
+    path_base=settings.PATH_IMAGEN_TRANSFORMADA
+    imagen.save(os.path.join(path_base,nombrearchivotransformado))
+
+    texto_imagen = pytesseract.image_to_string(imagen)
+    print('transformando frontal 2023')
+    print(texto_imagen)
     return texto_imagen,imagen

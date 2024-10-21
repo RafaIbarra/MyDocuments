@@ -6,18 +6,19 @@ import re
 from datetime import datetime
 import numpy as np
 from PIL import Image, ImageEnhance, ImageFilter
+from ...TransformacionImagen import *
 
 if os.name == 'nt':  # 'nt' es el identificador de Windows en Python
     pytesseract.pytesseract.tesseract_cmd = settings.DIRECCION_TESSERACT
 mensaje_deteccion='No detectada correctamente'
 
-def reverso_opcion_uno(direccion_imagen):
+def cedula2023_reverso_opcion_uno(direccion_imagen):
         
         
         seccion_1 =''
         seccion_2 =''
         seccion_3 =''
-        tipo_opcion='OPCION UNO'
+        tipo_opcion='cedula2023_reverso_opcion_uno'
         sexo_resp = ""
         fecha_vencimiento_resp=datetime.now()
         estado_resp='S/n'
@@ -26,18 +27,12 @@ def reverso_opcion_uno(direccion_imagen):
         fecha_nacimiento_resp=datetime.now()
         numero_documento_res=''
         texto_sin_espacios=''
+        mensaje='Exitoso'
         
         respuesta_correcta=True
-        imagen = Image.open(direccion_imagen)
-        imagen = imagen.convert('L')
-        enhancer = ImageEnhance.Brightness(imagen)
-        imagen = enhancer.enhance(1.5)
-        enhancer = ImageEnhance.Contrast(imagen)
-        imagen = enhancer.enhance(2)
-        imagen = imagen.filter(ImageFilter.SHARPEN)
         
-        
-        texto_imagen = pytesseract.image_to_string(imagen)
+
+        texto_imagen,imagen=Configuracion_reverso_2023(direccion_imagen,'ricardo_imagen_procesada_reverso_2023.jpg')
         
         patron = r"IDPRY.*"
         resultado = re.search(patron, texto_imagen, re.DOTALL)
@@ -163,6 +158,7 @@ def reverso_opcion_uno(direccion_imagen):
         else:
             error_formato=True
             respuesta_correcta=False
+            mensaje='Error lectura datos'
 
         data_respuesta={
             'texto_imagen':texto_imagen,
@@ -174,13 +170,14 @@ def reverso_opcion_uno(direccion_imagen):
             'nombres_resp':nombres_resp,
             'apellidos_resp':apellidos_resp,
             'fecha_nacimiento_resp':fecha_nacimiento_resp,
-            'tipo_opcion':tipo_opcion
+            'tipo_opcion':tipo_opcion,
+            'mensaje':mensaje
         }
         
         return error_formato,respuesta_correcta,data_respuesta
 
 
-def reverso_opcion_dos(direccion_imagen):
+def cedula2023_reverso_opcion_dos(direccion_imagen):
     seccion_1 =''
     seccion_2 =''
     seccion_3 =''
@@ -192,10 +189,10 @@ def reverso_opcion_dos(direccion_imagen):
     apellidos_resp=''
     fecha_nacimiento_resp=datetime.now()
     numero_documento_res=''
-    tipo_opcion='OPCION DOS'
+    tipo_opcion='cedula2023_reverso_opcion_dos'
     respuesta_correcta=True
     texto_sin_espacios=''
-
+    mensaje='Exitoso'
     imagen = cv2.imread(direccion_imagen)
 
     gris = cv2.cvtColor(imagen, cv2.COLOR_BGR2GRAY)
@@ -332,6 +329,7 @@ def reverso_opcion_dos(direccion_imagen):
 
     else:
         error_formato=True
+        mensaje='Error lectura datos'
             
     data_respuesta={
             'texto_imagen':texto_imagen,
@@ -343,7 +341,8 @@ def reverso_opcion_dos(direccion_imagen):
             'nombres_resp':nombres_resp,
             'apellidos_resp':apellidos_resp,
             'fecha_nacimiento_resp':fecha_nacimiento_resp,
-            'tipo_opcion':tipo_opcion
+            'tipo_opcion':tipo_opcion,
+            'mensaje':mensaje
         }
     return error_formato,respuesta_correcta,data_respuesta
 

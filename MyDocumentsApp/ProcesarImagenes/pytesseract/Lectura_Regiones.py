@@ -14,11 +14,11 @@ if os.name == 'nt':  # 'nt' es el identificador de Windows en Python
 
 def lectura_region(imagen,left, top, right, bottom,config_psm,nombreregion):
     path_base=settings.PATH_IMAGEN_TRANSFORMADA
-    ancho, alto = imagen.size
+    
     region_interes = imagen.crop((left, top, right, bottom))
     texto_imagen = pytesseract.image_to_string(region_interes , config=config_psm)
     texto = texto_imagen.strip()
     img_region = os.path.join(path_base, f'{nombreregion}_left-{left}_top-{top}_bottom-{bottom}_right-{right}.jpg')
     region_interes.save(img_region)
-    print('la region :',nombreregion,' resula: ',texto)
+    # print('la region :',nombreregion,' resula: ',texto)
     return texto
