@@ -439,6 +439,7 @@ class ViewLecturaImagen(APIView):
         error_formato_anverso,data_frontal = cedula2023_frontal_opcion_uno(img_anverso_path) # opcion 1 formato 2023
         
         if error_formato_anverso ==False:
+            
             error_formato_anverso,data_frontal = cedula2024_frontal_opcion_uno(img_anverso_path) # opcion 1 formato 2024
         
         texto_anverso=data_frontal['texto_imagen']

@@ -41,9 +41,11 @@ def cedula2024_frontal_opcion_uno(direccion_imagen):
         
     palabras_extraer = [
     'APELLIDOS FECHA OF VENCIMIENTO', 'APELLIDOS FECHA DE VENCIMIENTO',
-    'HOMBRES DOMANTE', 'NOMBRES DOMANTE', 'ey -', '————ne',
-    'LAs NACENTO', 'FECHA DE NACIMIENTO', 'LUGAR DE NACIMIENTO',
-    'SEXO']
+    'APELLIDOS FECHA OF VERCIMIENTO',
+    'HOMBRES DOMANTE', 'NOMBRES DOMANTE', 'ey -', '————ne','& -','& - ','————n ',
+    'LAs NACENTO', 'FECHA DE NACIMIENTO', 'FECHA-DE YENCIMIENTO','LUGAR DE NACIMIENTO',
+    'SEXO','Laas NACHENTO']
+    
     for palabra in palabras_extraer:
     # Usamos re.escape para tratar los caracteres especiales literalmente
         texto_desde_apellidos = re.sub(re.escape(palabra), '', texto_desde_apellidos, flags=re.IGNORECASE)

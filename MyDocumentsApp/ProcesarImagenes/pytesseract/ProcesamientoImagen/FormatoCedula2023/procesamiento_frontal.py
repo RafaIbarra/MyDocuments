@@ -32,6 +32,8 @@ def cedula2023_frontal_opcion_uno(direccion_imagen):
     # imagen = Image.open(direccion_imagen)
     # texto_imagen = pytesseract.image_to_string(imagen)
     texto_imagen,imagen=Configuracion_frontal_2023(direccion_imagen,'frontal_2023_procesada.jpg')
+    texto_imagen = texto_imagen.replace("APELLIOOS", "APELLIDOS")
+    
     patron = r"APELLIDOS, NOMBRES.*"
     resultado = re.search(patron, texto_imagen, re.DOTALL)
     texto = texto_imagen.strip()
