@@ -394,13 +394,13 @@ class ViewLecturaImagen(APIView):
         error_formato_reverso,repuesta_opcion,data_reverso = cedula2023_reverso_opcion_uno(img_reverso_path) # opcion 1 de formato 2023
         # print('Reverso Formato 1: ',error_formato_reverso, ' la respuesta 1: ',repuesta_opcion)
 
-        # if error_formato_reverso == False:
+        if error_formato_reverso == False:
             
-        #     if repuesta_opcion==False:
-        #         error_formato_reverso,repuesta_opcion_dos, data_reverso = cedula2023_reverso_opcion_dos(img_reverso_path) # opcion 2 de formato 2023
+            if repuesta_opcion==False:
+                error_formato_reverso,repuesta_opcion_dos, data_reverso = cedula2023_reverso_opcion_dos(img_reverso_path) # opcion 2 de formato 2023
             
-        # else:
-        #     error_formato_reverso,repuesta_opcion,data_reverso = cedula2024_reverso_opcion_uno(img_reverso_path) # opcion 1 de formato 2024
+        else:
+            error_formato_reverso,repuesta_opcion,data_reverso = cedula2024_reverso_opcion_uno(img_reverso_path) # opcion 1 de formato 2024
             
             
 
@@ -437,8 +437,9 @@ class ViewLecturaImagen(APIView):
 
         # Procesar la imagen Frontal
         error_formato_anverso,data_frontal = cedula2023_frontal_opcion_uno(img_anverso_path) # opcion 1 formato 2023
-        # if error_formato_anverso:
-        #     error_formato_anverso,data_frontal = cedula2024_frontal_opcion_uno(img_anverso_path) # opcion 1 formato 2024
+        
+        if error_formato_anverso ==False:
+            error_formato_anverso,data_frontal = cedula2024_frontal_opcion_uno(img_anverso_path) # opcion 1 formato 2024
         
         texto_anverso=data_frontal['texto_imagen']
         sexo_anv=data_frontal['sexo_resp']

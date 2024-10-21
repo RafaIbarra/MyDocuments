@@ -26,6 +26,7 @@ def cedula2024_reverso_opcion_uno(direccion_imagen):
     texto_sin_espacios=''
     error_formato=True
     mensaje_deteccion=''
+    mensaje='Exitoso'
     
     respuesta_correcta=True
     
@@ -147,6 +148,8 @@ def cedula2024_reverso_opcion_uno(direccion_imagen):
                     apellidos_resp = "No se encontraron apellidos"
                     nombres_resp = "No se encontraron nombres"
                     respuesta_correcta=False
+    else:
+        mensaje='Error lectura datos'
             
     data_respuesta={
             'texto_imagen':texto_imagen,
@@ -158,7 +161,8 @@ def cedula2024_reverso_opcion_uno(direccion_imagen):
             'nombres_resp':nombres_resp,
             'apellidos_resp':apellidos_resp,
             'fecha_nacimiento_resp':fecha_nacimiento_resp,
-            'tipo_opcion':tipo_opcion
+            'tipo_opcion':tipo_opcion,
+            'mensaje':mensaje
         }
         
     return error_formato,respuesta_correcta,data_respuesta

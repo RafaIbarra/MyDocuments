@@ -42,10 +42,9 @@ def Configuracion_inicial(direccion_imagen,nombrearchivotransformado):
     imagen = imagen.resize((imagen.width * 5, imagen.height * 5), Image.Resampling.LANCZOS)
     # imagen = imagen.resize((imagen.width * 9, imagen.height * 9), Image.Resampling.LANCZOS)
     path_base=settings.PATH_IMAGEN_TRANSFORMADA
-    imagen.save(os.path.join(path_base,nombrearchivotransformado))
+    # imagen.save(os.path.join(path_base,nombrearchivotransformado))
     texto_imagen = pytesseract.image_to_string(imagen)
-    print('EL TEXTO DE VUELTO ES')
-    print(texto_imagen)
+    
 
     return texto_imagen
 
@@ -88,7 +87,7 @@ def Configuracion_frontal(direccion_imagen,nombrearchivotransformado):
     # # Aumentar la resolución (opcional si el texto está borroso)
     imagen = imagen.resize((imagen.width * 2, imagen.height * 2), Image.Resampling.LANCZOS)
     path_base=settings.PATH_IMAGEN_TRANSFORMADA
-    imagen.save(os.path.join(path_base,nombrearchivotransformado))
+    # imagen.save(os.path.join(path_base,nombrearchivotransformado))
 
     texto_imagen = pytesseract.image_to_string(imagen)
 
@@ -112,7 +111,7 @@ def Configuracion_reverso_2023(direccion_imagen,nombrearchivotransformado):
     imagen = imagen.filter(ImageFilter.SHARPEN)
 
     path_base=settings.PATH_IMAGEN_TRANSFORMADA
-    imagen.save(os.path.join(path_base,nombrearchivotransformado))
+    # imagen.save(os.path.join(path_base,nombrearchivotransformado))
 
     texto_imagen = pytesseract.image_to_string(imagen)
     
@@ -132,9 +131,8 @@ def Configuracion_frontal_2023(direccion_imagen,nombrearchivotransformado):
     imagen = enhancer.enhance(2)
     imagen = imagen.filter(ImageFilter.SHARPEN)
     path_base=settings.PATH_IMAGEN_TRANSFORMADA
-    imagen.save(os.path.join(path_base,nombrearchivotransformado))
+    # imagen.save(os.path.join(path_base,nombrearchivotransformado))
 
     texto_imagen = pytesseract.image_to_string(imagen)
-    print('transformando frontal 2023')
-    print(texto_imagen)
+    
     return texto_imagen,imagen

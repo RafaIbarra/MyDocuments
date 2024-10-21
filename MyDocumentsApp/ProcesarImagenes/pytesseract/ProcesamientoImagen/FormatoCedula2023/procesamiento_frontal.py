@@ -20,7 +20,7 @@ def validar_fecha(fecha_texto):
 
 def cedula2023_frontal_opcion_uno(direccion_imagen):
     respuesta_correcta=True
-    error_formato=False
+    error_formato=True
     mensaje_deteccion='No detectada correctamente'
     texto_imagen=''
     sexo=''
@@ -35,8 +35,7 @@ def cedula2023_frontal_opcion_uno(direccion_imagen):
     patron = r"APELLIDOS, NOMBRES.*"
     resultado = re.search(patron, texto_imagen, re.DOTALL)
     texto = texto_imagen.strip()
-    # if not texto.startswith("APELLIDOS, NOMBRES"):
-    #    error_formato = True
+    
      
 
     if resultado :
@@ -45,37 +44,7 @@ def cedula2023_frontal_opcion_uno(direccion_imagen):
         
         referencias = ["APELLIDOS, NOMBRES", "FECHA DE NACIMIENTO", "LUGAR DE NACIMIENTO", "FECHA DE VENCIMIENTO", "SEXO"]
        
-        # for ref1 in referencias:
-        #     for ref2 in referencias:
-        #         if ref1 != ref2:
-        #             # Buscar dos referencias en la misma línea
-        #             patron_juntos = rf"{ref1} {ref2}"
-        #             # Verificar si existe la combinación en el texto
-        #             if re.search(patron_juntos, texto_normalizado):
-        #                 print(f'Encontrada combinación: {patron_juntos}')
-                        
-        #                 # Reemplazar para dejar el primer punto y mover el segundo al final
-        #                 texto_normalizado = re.sub(patron_juntos, ref1, texto_normalizado)
-        #                 # Agregar el segundo punto al final
-        #                 texto_normalizado = f"{texto_normalizado.strip()}\n{ref2}"
-                        
-        #                 # Buscar el texto debajo de ambas referencias
-        #                 # Primero buscamos el texto debajo de ref1
-        #                 patron_ref1 = rf"{ref1}\n(.+)"
-        #                 match_ref1 = re.search(patron_ref1, texto_normalizado)
-                        
-        #                 # Luego buscamos el texto debajo de ref2
-        #                 patron_ref2 = rf"{ref2}\n(.+)"
-        #                 match_ref2 = re.search(patron_ref2, texto_normalizado)
-                        
-        #                 # Imprimir el texto encontrado debajo de ambas referencias
-        #                 if match_ref1:
-        #                     texto_debajo_ref1 = match_ref1.group(1).strip()
-        #                     print(f"Texto debajo de {ref1}: {texto_debajo_ref1}")
-        #                 if match_ref2:
-        #                     texto_debajo_ref2 = match_ref2.group(1).strip()
-        #                     print(f"Texto debajo de {ref2}: {texto_debajo_ref2}")
-
+    
         for ref1 in referencias:
             for ref2 in referencias:
                 if ref1 != ref2:
@@ -83,7 +52,7 @@ def cedula2023_frontal_opcion_uno(direccion_imagen):
                     patron_juntos = rf"{ref1} {ref2}"
                     # Verificar si existe la combinación en el texto
                     if re.search(patron_juntos, texto_normalizado):
-                        print(f'Encontrada combinación: {patron_juntos}')
+                        
                         
                         # Reemplazar para dejar el primer punto y mover el segundo al final
                         texto_normalizado = re.sub(patron_juntos, ref1, texto_normalizado)
@@ -101,12 +70,12 @@ def cedula2023_frontal_opcion_uno(direccion_imagen):
                         # Procesar el texto debajo de ref1
                         if match_ref1:
                             texto_debajo_ref1 = match_ref1.group(1).strip()
-                            print(f"Texto debajo de {ref1}: {texto_debajo_ref1}")
+                            
                             
                             # Si el texto debajo tiene dos partes separadas por espacio, lo separamos
                             if ' ' in texto_debajo_ref1:
                                 primera_parte, segunda_parte = texto_debajo_ref1.split(' ', 1)
-                                print(f"Primera parte: {primera_parte}, Segunda parte: {segunda_parte}")
+                                
                                 
                                 # Reemplazar el texto debajo de ref1 solo con la primera parte
                                 texto_normalizado = re.sub(rf"{ref1}\n{texto_debajo_ref1}", rf"{ref1}\n{primera_parte}", texto_normalizado)
@@ -115,8 +84,7 @@ def cedula2023_frontal_opcion_uno(direccion_imagen):
                                 texto_normalizado = f"{texto_normalizado.strip()}\n{segunda_parte}"
 
 
-        print('prueba de puntos de referencia')    
-        print(texto_normalizado)
+      
         secciones = {}
         patrones = {
         "apellidos_nombres": r"APELLIDOS, NOMBRES\n(.+)\n(.+)",
@@ -125,14 +93,9 @@ def cedula2023_frontal_opcion_uno(direccion_imagen):
         "fecha_vencimiento": r"FECHA DE VENCIMIENTO\n(.+)",
         "sexo": r"SEXO\n(.+)"
         }
-        # for seccion, patron in patrones.items():
-        #     match = re.search(patron, texto_normalizado)
-        #     print(match)
-        #     if match:
-        #         secciones[seccion] = match.groups()
-        # Iterar sobre cada patrón
+        
         for seccion, patron in patrones.items():
-            print(patron)
+            
             match = re.search(patron, texto_normalizado)
             
             if match:
@@ -148,7 +111,7 @@ def cedula2023_frontal_opcion_uno(direccion_imagen):
             else:
                 secciones[seccion] = ''
 
-        print(secciones)
+        
         apellidos_nombres = secciones.get("apellidos_nombres", ("No encontrado", "No encontrado"))
         fecha_nacimiento = secciones.get("fecha_nacimiento", ("No encontrada",))
         lugar_nacimiento = secciones.get("lugar_nacimiento", ("No encontrado",))
@@ -177,6 +140,7 @@ def cedula2023_frontal_opcion_uno(direccion_imagen):
         sexo = sexo[0].upper() if sexo else mensaje_deteccion
     else:
         error_formato= False
+
     data_respuesta={
             'texto_imagen':texto_imagen,
             'sexo_resp':sexo,

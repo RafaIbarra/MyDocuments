@@ -19,6 +19,6 @@ def lectura_region(imagen,left, top, right, bottom,config_psm,nombreregion):
     texto_imagen = pytesseract.image_to_string(region_interes , config=config_psm)
     texto = texto_imagen.strip()
     img_region = os.path.join(path_base, f'{nombreregion}_left-{left}_top-{top}_bottom-{bottom}_right-{right}.jpg')
-    region_interes.save(img_region)
+    # region_interes.save(img_region)
     # print('la region :',nombreregion,' resula: ',texto)
     return texto
